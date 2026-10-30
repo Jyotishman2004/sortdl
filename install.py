@@ -3,6 +3,8 @@
 Keep this file in the same folder as sortdl.py, then run:
     python install.py              install + start now      (python3 on macOS/Linux)
     python install.py --uninstall  stop, remove auto-start and installed files
+    python install.py --keep-hours 6   keep new downloads in "Latest" for 6 hours
+                                       (default 24, 0 = no Latest folder)
 
 What install does:
   1. copies sortdl.py to a per-user folder (see INSTALL_DIR below)
@@ -55,7 +57,7 @@ def stop_running_copies(target: Path) -> None:
         pass  # pkill/powershell missing - the single-instance guard still protects us
 
 
-def install() -> None:
+def install(keep_hours: float) -> None:
     source = Path(__file__).resolve().with_name(SCRIPT_NAME)
     if not source.exists():
         sys.exit(f"Can't find {SCRIPT_NAME} next to this installer ({source.parent}).")
@@ -87,7 +89,8 @@ def install() -> None:
                            "-q", "watchdog"])
 
     print("[5/5] Registering auto-start and starting sortdl...")
-    subprocess.check_call([str(vpy), str(target), "--install-startup"])
+    subprocess.check_call([str(vpy), str(target), "--install-startup",
+                           "--keep-hours", f"{keep_hours:g}"])
 
     print("\nDone. sortdl is running now and will start automatically at every login.")
     print(f"Log file: {base / 'sortdl.log'}")
@@ -110,8 +113,13 @@ def uninstall() -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Install sortdl.")
     ap.add_argument("--uninstall", action="store_true", help="remove it completely")
+    ap.add_argument("--keep-hours", type=float, default=24.0,
+                    help="hours new downloads stay in the Latest folder before being "
+                         "sorted (default 24; 0 = sort immediately)")
     args = ap.parse_args()
-    uninstall() if args.uninstall else install()
+    if args.keep_hours < 0:
+        ap.error("--keep-hours must be 0 or more")
+    uninstall() if args.uninstall else install(args.keep_hours)
 
 
 if __name__ == "__main__":

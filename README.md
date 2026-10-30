@@ -2,12 +2,34 @@
 
 Automatically sorts your **Downloads** folder into category folders on **Windows, macOS and Linux**, and keeps doing it in the background every time you log in.
 
+- Puts every new download in one **`Latest`** folder, so you never have to dig through category folders for something you just downloaded.
+- After 24 hours (you can change this), moves each file from `Latest` into its category folder.
 - Sorts the files already in Downloads when you start it.
-- Sorts new downloads as they arrive.
 - Runs in the background and uses very little CPU.
 - Starts by itself when you log in.
 
+## How the `Latest` folder works
+
+1. You download a file. A moment later sortdl moves it into `Downloads/Latest`.
+2. It stays there for **24 hours**, so everything from the last day is in one place.
+3. After that, sortdl moves it into its category folder (table below). Nothing is deleted.
+
+Files already in Downloads when sortdl first starts are handled the same way: anything changed in the last 24 hours goes to `Latest`, and older files are sorted straight into their category folders.
+
+You can change the time when you install:
+
+| Command | Effect |
+|---------|--------|
+| `python install.py` | Keep new downloads in `Latest` for 24 hours (default). |
+| `python install.py --keep-hours 6` | Keep them for 6 hours. Decimals work too, like `0.5` for 30 minutes. |
+| `python install.py --keep-hours 168` | Keep them for a week. |
+| `python install.py --keep-hours 0` | Turn `Latest` off. New files are sorted immediately. |
+
+(Use `python3` on macOS / Linux.) To change the time later, just run the installer again with a new value. If you drop a file into `Latest` yourself, it gets its own 24-hour timer. sortdl keeps a small hidden file in `Latest` (`.sortdl_times.json`) to remember when each file arrived. Don't delete it unless you don't mind the timers restarting.
+
 ## What goes where
+
+After their time in `Latest`, files are sorted like this:
 
 | Folder        | File types |
 |---------------|------------|
@@ -82,6 +104,7 @@ Run these from the project folder (use `python3` on macOS / Linux):
 |---------|--------------|
 | `python sortdl.py` | Run in the console without installing. Press Ctrl+C to stop. |
 | `python sortdl.py --path "/some/folder"` | Organize a different folder instead of Downloads. |
+| `python sortdl.py --keep-hours 6` | Keep new downloads in `Latest` for 6 hours (`0` = sort immediately). |
 | `python sortdl.py --install-startup` | Register auto-start and start now (uses the Python you ran it with, so use `install.py` for normal setup). |
 | `python sortdl.py --uninstall-startup` | Remove auto-start. |
 
@@ -98,6 +121,10 @@ It starts again at your next login unless you uninstall it.
 ## Notes for macOS
 
 macOS protects the Downloads folder. The first time sortdl runs you may see a prompt asking to allow access to Downloads. Click **Allow**. If files aren't moving and the log shows `Operation not permitted`, open **System Settings > Privacy & Security > Files and Folders** (or **Full Disk Access**) and allow the Python used by sortdl: `~/Library/Application Support/sortdl/venv/bin/python`.
+
+## Updating to a newer version
+
+Download the new files and run the installer again (`python install.py`, or `python3` on macOS / Linux). It replaces the old copy and keeps your settings only if you pass them again, such as `--keep-hours 6`.
 
 ## Upgrading from the earlier Windows-only version
 
@@ -116,6 +143,8 @@ Then follow the setup steps above.
 | `'python' is not recognized` (Windows) | Reinstall Python and tick **Add python.exe to PATH**, or use `py install.py`. |
 | `Could not create the virtual environment` (Linux) | Run `sudo apt install python3-venv`, then run the installer again. |
 | `sortdl is already running - exiting.` in the log | Normal. Only one copy runs at a time. |
+| A new download isn't in its category folder | That's expected: it's in `Latest` until its time is up (24 hours by default). |
+| I want files sorted immediately | Run the installer with `--keep-hours 0`. |
 | Files aren't moving | Check `sortdl.log`. Files still downloading (`.crdownload`, `.part`) are skipped until they finish. |
 | `Folder not found` | Your Downloads folder doesn't exist or is in a non-standard place. Use `--path` to point at it. |
 | Installer says it can't find `sortdl.py` | Run the installer from inside the project folder, where `sortdl.py` is also located. |
