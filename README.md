@@ -54,16 +54,26 @@ The folders are created inside your Downloads folder. If a file with the same na
 
 ## Setup (one time)
 
-1. **Get the project.** Click the green **Code** button on GitHub, then **Download ZIP**, and extract it. Or run `git clone https://github.com/Jyotishman2004/sortdl.git`.
-2. **Open a terminal in that folder.**
-   - Windows: click the File Explorer address bar, type `cmd`, press Enter.
-   - macOS / Linux: open Terminal and `cd` into the folder.
-3. **Run the installer:**
+### Windows: two clicks
 
-   | System | Command |
-   |--------|---------|
-   | Windows | `python install.py` |
-   | macOS / Linux | `python3 install.py` |
+1. **Get the project.** Click the green **Code** button on GitHub, then **Download ZIP**. Right-click the ZIP and choose **Extract All** (do not run it from inside the ZIP).
+2. **Double-click `install.bat`** in the extracted folder.
+
+A window shows the progress and finishes with `Done. sortdl is running now...`. Press any key to close it. If Windows shows a blue "Windows protected your PC" box, click **More info**, then **Run anyway**. The file is plain text, so you can open it in Notepad to check what it does.
+
+If it says Python was not found, install Python from the page it opens (tick **Add python.exe to PATH**), then double-click `install.bat` again.
+
+### macOS and Linux
+
+1. **Get the project.** Download the ZIP and extract it, or run `git clone https://github.com/Jyotishman2004/sortdl.git`.
+2. **Open Terminal in that folder** (`cd` into it) and run:
+   ```
+   python3 install.py
+   ```
+
+### Windows from the command line (optional)
+
+If you prefer a terminal: click the File Explorer address bar, type `cmd`, press Enter, and run `python install.py`.
 
 The installer:
 1. stops any older copy that's running,
@@ -89,9 +99,9 @@ You can delete the downloaded folder afterwards. The installed copy is self-cont
 
 Run this from the project folder:
 
-| System | Command |
-|--------|---------|
-| Windows | `python install.py --uninstall` |
+| System | How |
+|--------|-----|
+| Windows | Double-click `uninstall.bat` |
 | macOS / Linux | `python3 install.py --uninstall` |
 
 This stops sortdl, removes auto-start and deletes the installed copy. Your sorted files and folders are left alone.
@@ -124,7 +134,7 @@ macOS protects the Downloads folder. The first time sortdl runs you may see a pr
 
 ## Updating to a newer version
 
-Download the new files and run the installer again (`python install.py`, or `python3` on macOS / Linux). It replaces the old copy and keeps your settings only if you pass them again, such as `--keep-hours 6`.
+Download the new files and run the installer again (double-click `install.bat` on Windows, or run `python3 install.py` on macOS / Linux). It replaces the old copy and keeps your settings only if you pass them again, such as `--keep-hours 6`.
 
 ## Upgrading from the earlier Windows-only version
 
@@ -155,4 +165,5 @@ Then follow the setup steps above.
 
 - `sortdl.py`: the organizer. Sorts existing files, then watches Downloads for new ones.
 - `install.py`: one-step installer and uninstaller for all three systems.
+- `install.bat` / `uninstall.bat`: double-click versions of the installer and uninstaller for Windows.
 - `README.md`: this file.
