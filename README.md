@@ -138,13 +138,7 @@ Download the new files and run the installer again (double-click `install.bat` o
 
 ## Upgrading from the earlier Windows-only version
 
-If you set up the earlier `downloads_organizer.py` version, remove it first so two copies don't run:
-
-1. Press **Win+R**, type `shell:startup`, press Enter, and delete `DownloadsOrganizer.vbs`.
-2. Delete the folder `%LOCALAPPDATA%\DownloadsOrganizer`.
-3. End any `pythonw.exe` process in Task Manager.
-
-Then follow the setup steps above.
+Nothing to do by hand. When you run `install.bat` (or `install.py`), it stops the earlier `downloads_organizer.py` version if it's running, and removes its auto-start entry and folder. If an old copy is left running, it blocks the new one from starting, so this cleanup matters.
 
 ## Troubleshooting
 

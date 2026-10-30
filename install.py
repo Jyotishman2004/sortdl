@@ -23,6 +23,7 @@ import venv
 from pathlib import Path
 
 SCRIPT_NAME = "sortdl.py"
+LEGACY_SCRIPT = "downloads_organizer.py"  # name used by the very first (Windows-only) version
 IS_WIN = os.name == "nt"
 IS_MAC = sys.platform == "darwin"
 
@@ -45,7 +46,8 @@ def stop_running_copies(target: Path) -> None:
             ps = (
                 "Get-CimInstance Win32_Process | "
                 "Where-Object { $_.Name -match '^pythonw?\\.exe$' -and "
-                f"$_.CommandLine -like '*{SCRIPT_NAME}*' }} | "
+                f"($_.CommandLine -like '*{SCRIPT_NAME}*' -or "
+                f"$_.CommandLine -like '*{LEGACY_SCRIPT}*') }} | "
                 "ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"
             )
             subprocess.run(["powershell", "-NoProfile", "-Command", ps],
@@ -55,6 +57,18 @@ def stop_running_copies(target: Path) -> None:
                            capture_output=True, check=False)
     except OSError:
         pass  # pkill/powershell missing - the single-instance guard still protects us
+
+
+def remove_legacy() -> None:
+    """Windows: remove the auto-start entry and folder of the very first version."""
+    if not IS_WIN:
+        return
+    appdata, local = os.environ.get("APPDATA"), os.environ.get("LOCALAPPDATA")
+    if appdata:
+        (Path(appdata) / "Microsoft/Windows/Start Menu/Programs/Startup"
+         / "DownloadsOrganizer.vbs").unlink(missing_ok=True)
+    if local:
+        shutil.rmtree(Path(local) / "DownloadsOrganizer", ignore_errors=True)
 
 
 def install(keep_hours: float) -> None:
@@ -71,6 +85,7 @@ def install(keep_hours: float) -> None:
         subprocess.run([str(vpy) if vpy.exists() else sys.executable, str(target),
                         "--uninstall-startup"], capture_output=True, check=False)
     stop_running_copies(target)
+    remove_legacy()
 
     print(f"[2/5] Copying {SCRIPT_NAME} to {base} ...")
     base.mkdir(parents=True, exist_ok=True)
