@@ -13,7 +13,7 @@ Keeps your **Downloads** folder tidy, by itself. Works on Windows, macOS and Lin
 
 1. On this page, click the green **Code** button, then **Download ZIP**.
 2. Right-click the ZIP file and choose **Extract All**.
-3. Open the new folder and **double-click `install.bat`**.
+3. Open the new folder and **double-click `install.bat`**, a security box will appear click on **RUN**.
 4. Wait until it says `Done. sortdl is running now`. Press any key to close.
 
 That's it. Download something and look for it in `Downloads\Latest`.
