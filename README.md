@@ -1,163 +1,130 @@
 # sortdl
 
-Automatically sorts your **Downloads** folder into category folders on **Windows, macOS and Linux**, and keeps doing it in the background every time you log in.
+Keeps your **Downloads** folder tidy, by itself. Works on Windows, macOS and Linux.
 
-- Puts every new download in one **`Latest`** folder, so you never have to dig through category folders for something you just downloaded.
-- After 24 hours (you can change this), moves each file from `Latest` into its category folder.
-- Sorts the files already in Downloads when you start it.
-- Runs in the background and uses very little CPU.
-- Starts by itself when you log in.
+**What it does**
 
-## How the `Latest` folder works
+- Every new download goes into one folder called **`Latest`**, so your newest files are always easy to find.
+- After 24 hours, each file moves into its own folder: Images, Videos, Documents and so on.
+- It runs quietly in the background and starts again every time you log in.
+- Nothing is ever deleted.
 
-1. You download a file. A moment later sortdl moves it into `Downloads/Latest`.
-2. It stays there for **24 hours**, so everything from the last day is in one place.
-3. After that, sortdl moves it into its category folder (table below). Nothing is deleted.
+## Install on Windows
 
-Files already in Downloads when sortdl first starts are handled the same way: anything changed in the last 24 hours goes to `Latest`, and older files are sorted straight into their category folders.
+1. On this page, click the green **Code** button, then **Download ZIP**.
+2. Right-click the ZIP file and choose **Extract All**.
+3. Open the new folder and **double-click `install.bat`**.
+4. Wait until it says `Done. sortdl is running now`. Press any key to close.
 
-You can change the time when you install:
+That's it. Download something and look for it in `Downloads\Latest`.
 
-| Command | Effect |
-|---------|--------|
-| `python install.py` | Keep new downloads in `Latest` for 24 hours (default). |
-| `python install.py --keep-hours 6` | Keep them for 6 hours. Decimals work too, like `0.5` for 30 minutes. |
-| `python install.py --keep-hours 168` | Keep them for a week. |
-| `python install.py --keep-hours 0` | Turn `Latest` off. New files are sorted immediately. |
+**Need Python?** sortdl runs on Python 3.8 or newer. If you don't have it, `install.bat` opens the download page for you. During the Python install, tick **Add python.exe to PATH**, then double-click `install.bat` again.
 
-(Use `python3` on macOS / Linux.) To change the time later, just run the installer again with a new value. If you drop a file into `Latest` yourself, it gets its own 24-hour timer. sortdl keeps a small hidden file in `Latest` (`.sortdl_times.json`) to remember when each file arrived. Don't delete it unless you don't mind the timers restarting.
+**Blue "Windows protected your PC" box?** Click **More info**, then **Run anyway**. The file is plain text, so you can open it in Notepad to see what it does.
 
-## What goes where
+## Install on macOS or Linux
 
-After their time in `Latest`, files are sorted like this:
-
-| Folder        | File types |
-|---------------|------------|
-| `Images`      | jpg, jpeg, png, gif, bmp, svg, webp |
-| `Videos`      | mp4, mkv, avi, mov, wmv, flv, webm |
-| `Documents`   | pdf, docx, doc, txt, xlsx, pptx, csv |
-| `Music`       | mp3, wav, flac, aac, m4a |
-| `Archives`    | zip, rar, 7z, tar, gz |
-| `Installers`  | exe, msi |
-| `Others`      | everything else, including files with no extension |
-
-The folders are created inside your Downloads folder. If a file with the same name is already in the destination, the new one is renamed (`report (1).pdf`) and nothing is overwritten. Half-finished downloads (`.crdownload`, `.part`, `.tmp`) and hidden files are left alone until they're complete.
-
-## Requirements
-
-- **Python 3.8 or newer**
-  - Windows: install from [python.org](https://www.python.org/downloads/) and tick **Add python.exe to PATH**.
-  - macOS: install from python.org or with Homebrew (`brew install python`).
-  - Linux: usually preinstalled. On Debian/Ubuntu you also need `sudo apt install python3-venv`.
-
-`watchdog` (a file-watching library) is installed automatically into a private environment during setup, so nothing is installed system-wide.
-
-## Setup (one time)
-
-### Windows: two clicks
-
-1. **Get the project.** Click the green **Code** button on GitHub, then **Download ZIP**. Right-click the ZIP and choose **Extract All** (do not run it from inside the ZIP).
-2. **Double-click `install.bat`** in the extracted folder.
-
-A window shows the progress and finishes with `Done. sortdl is running now...`. Press any key to close it. If Windows shows a blue "Windows protected your PC" box, click **More info**, then **Run anyway**. The file is plain text, so you can open it in Notepad to check what it does.
-
-If it says Python was not found, install Python from the page it opens (tick **Add python.exe to PATH**), then double-click `install.bat` again.
-
-### macOS and Linux
-
-1. **Get the project.** Download the ZIP and extract it, or run `git clone https://github.com/Jyotishman2004/sortdl.git`.
-2. **Open Terminal in that folder** (`cd` into it) and run:
+1. Click **Code**, then **Download ZIP**, and extract it.
+2. Open Terminal in that folder and run:
    ```
    python3 install.py
    ```
 
-### Windows from the command line (optional)
+On Debian or Ubuntu Linux, if it asks for it, first run `sudo apt install python3-venv`.
 
-If you prefer a terminal: click the File Explorer address bar, type `cmd`, press Enter, and run `python install.py`.
+## Where your files go
 
-The installer:
-1. stops any older copy that's running,
-2. copies `sortdl.py` to a per-user folder (table below),
-3. creates a private Python environment there and installs `watchdog`,
-4. sets sortdl to start automatically at login,
-5. starts it now, which also sorts everything already in Downloads.
+| Folder | What goes in it |
+|--------|-----------------|
+| `Latest` | Everything new, for the first 24 hours |
+| `Images` | jpg, jpeg, png, gif, bmp, svg, webp |
+| `Videos` | mp4, mkv, avi, mov, wmv, flv, webm |
+| `Documents` | pdf, docx, doc, txt, xlsx, pptx, csv |
+| `Music` | mp3, wav, flac, aac, m4a |
+| `Archives` | zip, rar, 7z, tar, gz |
+| `Installers` | exe, msi |
+| `Others` | everything else |
 
-You can delete the downloaded folder afterwards. The installed copy is self-contained.
+- These folders are created inside your Downloads folder.
+- If two files have the same name, the new one is renamed, like `report (1).pdf`. Nothing is overwritten.
+- Files that are still downloading are left alone until they finish.
+- The first time you install, files already in Downloads are handled too. Ones from the last 24 hours go to `Latest`, and older ones go straight to their folder.
 
-| System | Installed to | Starts at login via |
-|--------|--------------|---------------------|
+## Change how long files stay in Latest
+
+Run the installer again with the number of hours you want. On Windows, open Command Prompt in the folder (type `cmd` in the File Explorer address bar) and run one of these. On macOS and Linux, use `python3` instead of `python`.
+
+| Command | Result |
+|---------|--------|
+| `python install.py --keep-hours 6` | Keep files in `Latest` for 6 hours |
+| `python install.py --keep-hours 168` | Keep them for a week |
+| `python install.py --keep-hours 0` | No `Latest` folder. New files are sorted right away. |
+
+## Remove it
+
+- **Windows:** double-click `uninstall.bat`.
+- **macOS / Linux:** run `python3 install.py --uninstall`.
+
+This stops sortdl and removes it from startup. Your files and folders stay as they are.
+
+## Update to a new version
+
+Download the new ZIP, extract it, and run the installer again (double-click `install.bat` on Windows). It replaces the old copy automatically, including the earlier `downloads_organizer.py` version.
+
+## Something not working?
+
+| Problem | What to do |
+|---------|------------|
+| A new download isn't in its category folder | That's normal. It's in `Latest` for 24 hours first. |
+| `Latest` never appears | Run the installer again. If it still doesn't appear, end every `pythonw.exe` in Task Manager first, then run it again. |
+| `install.bat` says Python was not found | Install Python from python.org and tick **Add python.exe to PATH**. |
+| `'python' is not recognized` (Command Prompt) | Use `py install.py`, or reinstall Python with **Add python.exe to PATH** ticked. |
+| I want to see what it did | Open `sortdl.log` in the install folder (see below). Every move is listed there. |
+
+<details>
+<summary><b>More details (optional)</b></summary>
+
+### Where it installs
+
+| System | Installed to | Starts at login with |
+|--------|--------------|----------------------|
 | Windows | `%LOCALAPPDATA%\sortdl` | a launcher in your Startup folder |
-| macOS | `~/Library/Application Support/sortdl` | a LaunchAgent (`~/Library/LaunchAgents/com.sortdl.plist`) |
-| Linux | `~/.local/share/sortdl` | a systemd user service, or a desktop autostart entry if systemd isn't available |
+| macOS | `~/Library/Application Support/sortdl` | a LaunchAgent (`com.sortdl`) |
+| Linux | `~/.local/share/sortdl` | a systemd user service, or a desktop autostart entry |
 
-## Checking that it works
+The log file `sortdl.log` is in that folder. You can delete the extracted ZIP folder after installing.
 
-- Download any file. It should move into its category folder within a few seconds.
-- Open the log file (`sortdl.log`) in the install folder from the table above. Every move is recorded there with a timestamp.
+### Stop it for now
 
-## Uninstall
-
-Run this from the project folder:
+It starts again at your next login unless you uninstall.
 
 | System | How |
 |--------|-----|
-| Windows | Double-click `uninstall.bat` |
-| macOS / Linux | `python3 install.py --uninstall` |
-
-This stops sortdl, removes auto-start and deletes the installed copy. Your sorted files and folders are left alone.
-
-## Other commands
-
-Run these from the project folder (use `python3` on macOS / Linux):
-
-| Command | What it does |
-|---------|--------------|
-| `python sortdl.py` | Run in the console without installing. Press Ctrl+C to stop. |
-| `python sortdl.py --path "/some/folder"` | Organize a different folder instead of Downloads. |
-| `python sortdl.py --keep-hours 6` | Keep new downloads in `Latest` for 6 hours (`0` = sort immediately). |
-| `python sortdl.py --install-startup` | Register auto-start and start now (uses the Python you ran it with, so use `install.py` for normal setup). |
-| `python sortdl.py --uninstall-startup` | Remove auto-start. |
-
-## Stopping it temporarily
-
-| System | How |
-|--------|-----|
-| Windows | Task Manager > find `pythonw.exe` > **End task** |
+| Windows | Task Manager, find `pythonw.exe`, **End task** |
 | macOS | `launchctl bootout gui/$(id -u)/com.sortdl` |
-| Linux | `systemctl --user stop sortdl` (or `pkill -f sortdl.py` if you're using the autostart fallback) |
+| Linux | `systemctl --user stop sortdl` (or `pkill -f sortdl.py`) |
 
-It starts again at your next login unless you uninstall it.
+### Run it without installing
 
-## Notes for macOS
+```
+python sortdl.py                        run in this window, Ctrl+C to stop
+python sortdl.py --keep-hours 6         same, with a 6 hour Latest
+python sortdl.py --path "/some/folder"  sort a different folder
+```
 
-macOS protects the Downloads folder. The first time sortdl runs you may see a prompt asking to allow access to Downloads. Click **Allow**. If files aren't moving and the log shows `Operation not permitted`, open **System Settings > Privacy & Security > Files and Folders** (or **Full Disk Access**) and allow the Python used by sortdl: `~/Library/Application Support/sortdl/venv/bin/python`.
+### How `Latest` remembers time
 
-## Updating to a newer version
+A small hidden file, `.sortdl_times.json`, inside `Latest` records when each file arrived. If you delete it, the timers start over. A file you drop into `Latest` yourself gets its own 24 hour timer.
 
-Download the new files and run the installer again (double-click `install.bat` on Windows, or run `python3 install.py` on macOS / Linux). It replaces the old copy and keeps your settings only if you pass them again, such as `--keep-hours 6`.
+### macOS permission
 
-## Upgrading from the earlier Windows-only version
+macOS protects the Downloads folder. If it asks for access, click **Allow**. If files aren't moving and `sortdl.log` says `Operation not permitted`, open **System Settings > Privacy & Security > Files and Folders** (or **Full Disk Access**) and allow `~/Library/Application Support/sortdl/venv/bin/python`.
 
-Nothing to do by hand. When you run `install.bat` (or `install.py`), it stops the earlier `downloads_organizer.py` version if it's running, and removes its auto-start entry and folder. If an old copy is left running, it blocks the new one from starting, so this cleanup matters.
+### Files in this project
 
-## Troubleshooting
-
-| Problem | Fix |
-|---------|-----|
-| `'python' is not recognized` (Windows) | Reinstall Python and tick **Add python.exe to PATH**, or use `py install.py`. |
-| `Could not create the virtual environment` (Linux) | Run `sudo apt install python3-venv`, then run the installer again. |
-| `sortdl is already running - exiting.` in the log | Normal. Only one copy runs at a time. |
-| A new download isn't in its category folder | That's expected: it's in `Latest` until its time is up (24 hours by default). |
-| I want files sorted immediately | Run the installer with `--keep-hours 0`. |
-| Files aren't moving | Check `sortdl.log`. Files still downloading (`.crdownload`, `.part`) are skipped until they finish. |
-| `Folder not found` | Your Downloads folder doesn't exist or is in a non-standard place. Use `--path` to point at it. |
-| Installer says it can't find `sortdl.py` | Run the installer from inside the project folder, where `sortdl.py` is also located. |
-| Nothing happens after a reboot (Windows) | Check that `sortdl.vbs` is in the Startup folder (Win+R, `shell:startup`). If not, run the installer again. |
-| Nothing happens after a reboot (Linux) | Check `systemctl --user status sortdl`, or look for `~/.config/autostart/sortdl.desktop`. |
-
-## Files in this project
-
-- `sortdl.py`: the organizer. Sorts existing files, then watches Downloads for new ones.
-- `install.py`: one-step installer and uninstaller for all three systems.
-- `install.bat` / `uninstall.bat`: double-click versions of the installer and uninstaller for Windows.
+- `sortdl.py`: the program that sorts your files.
+- `install.py`: the installer and uninstaller (all systems).
+- `install.bat` and `uninstall.bat`: double-click versions for Windows.
 - `README.md`: this file.
+
+</details>
