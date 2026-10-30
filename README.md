@@ -114,7 +114,7 @@ python sortdl.py --path "/some/folder"  sort a different folder
 
 ### How `Latest` remembers time
 
-A small hidden file, `.sortdl_times.json`, inside `Latest` records when each file arrived. If you delete it, the timers start over. A file you drop into `Latest` yourself gets its own 24 hour timer.
+sortdl writes down when each file arrived in a small file, `sortdl_state.json`, kept in its own install folder (not in Downloads, so you'll never see it there). If you delete it, the timers start over. A file you drop into `Latest` yourself gets its own 24 hour timer.
 
 ### macOS permission
 

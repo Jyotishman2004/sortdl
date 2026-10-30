@@ -53,7 +53,8 @@ CATEGORIES = {
 }
 OTHERS = "Others"
 LATEST = "Latest"                      # holds new downloads for a while
-STATE_NAME = ".sortdl_times.json"      # when each file arrived in Latest
+STATE_FILE = SELF.with_name("sortdl_state.json")  # when each file arrived in Latest
+LEGACY_STATE_NAME = ".sortdl_times.json"          # older versions kept this inside Latest
 DEFAULT_KEEP_HOURS = 24.0
 
 # Browsers write to these while a download is in progress; skip until renamed.
@@ -177,20 +178,43 @@ def move_file(path: Path, root: Path) -> None:
 
 # ------------------------------------------------------------ "Latest" folder
 
-def _load_state(root: Path) -> dict:
+def _read_json(path: Path) -> dict:
     try:
-        data = json.loads((root / LATEST / STATE_NAME).read_text(encoding="utf-8"))
+        data = json.loads(path.read_text(encoding="utf-8"))
         return data if isinstance(data, dict) else {}
     except (OSError, ValueError):
         return {}
 
 
+def _load_state(root: Path) -> dict:
+    """Arrival times (file name -> epoch seconds) for the files in root/Latest.
+
+    Kept next to sortdl.py, not in Downloads, so no extra files show up there.
+    """
+    state = _read_json(STATE_FILE).get(str(root))
+    state = state if isinstance(state, dict) else {}
+    legacy = root / LATEST / LEGACY_STATE_NAME
+    if legacy.exists():  # older versions kept the times inside Latest: import and remove
+        for name, arrived in _read_json(legacy).items():
+            state.setdefault(name, arrived)
+        _save_state(root, state)
+        try:
+            legacy.unlink()
+        except OSError:
+            pass
+    return state
+
+
 def _save_state(root: Path, state: dict) -> None:
-    path = root / LATEST / STATE_NAME
+    data = _read_json(STATE_FILE)
+    if state:
+        data[str(root)] = state
+    else:
+        data.pop(str(root), None)
     try:
-        tmp = path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(state), encoding="utf-8")
-        os.replace(tmp, path)
+        tmp = STATE_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data), encoding="utf-8")
+        os.replace(tmp, STATE_FILE)
     except OSError:
         pass
 
